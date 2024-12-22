@@ -1,3 +1,8 @@
+import Task.Task;
+import Task.Epic;
+import Task.Subtask;
+import Task.Status;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -75,7 +80,7 @@ public class TaskManager {
     void updateEpicStatus(Epic epic) {
         ArrayList<Status> subtaskStatus = new ArrayList<>();
         for (Subtask subStatus : subtasks.values()) {
-            if (subStatus.getEpicId() == epic.id) {
+            if (subStatus.getEpicId() == epic.getId()) {
                 subtaskStatus.add(subStatus.getStatus());
             }
             int statusNew = 0;
