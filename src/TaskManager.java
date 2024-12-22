@@ -85,7 +85,7 @@ public class TaskManager {
             }
             int statusNew = 0;
             int statusDone = 0;
-            Status stat = Status.IN_PROGRESS;
+            Status stat;
             for (Status status : subtaskStatus) {
                 if (status == Status.NEW) {
                     statusNew++;
@@ -93,7 +93,7 @@ public class TaskManager {
                     statusDone++;
                 }
             }
-            if (statusNew == subtaskStatus.size()) {
+            if (subtaskStatus.isEmpty() || statusNew == subtaskStatus.size()) {
                 stat = Status.NEW;
             } else if (statusDone == subtaskStatus.size()) {
                 stat = Status.DONE;
@@ -144,7 +144,7 @@ public class TaskManager {
     }
 
     public void clearAllEpics() {
-        clearAllSubtasks();
+        subtasks.clear();
         epics.clear();
     }
 
