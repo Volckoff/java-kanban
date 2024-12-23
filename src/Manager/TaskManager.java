@@ -1,5 +1,4 @@
 package Manager;
-
 import Task.Task;
 import Task.Epic;
 import Task.Subtask;
@@ -99,18 +98,37 @@ public class TaskManager {
     }
 
     public void updateTask(Task task) {
-        int id = task.getId();
-        tasks.put(id, task);
+        final Task updTask = tasks.get(task.getId());
+        if (updTask == null) {
+            System.out.println("Задание не существует");
+            return;
+        }
+        updTask.setName(task.getName());
+        updTask.setDescription(task.getDescription());
     }
 
     public void updateEpic(Epic epic) {
-        int id = epic.getId();
-        epics.put(id, epic);
+        final Epic updEpic = epics.get(epic.getId());
+        if (updEpic == null) {
+            System.out.println("Эпик не существует");
+            return;
+        }
+        updEpic.setName(epic.getName());
+        updEpic.setDescription(epic.getDescription());
+        ArrayList <Integer> updSubtaskId = epic.getSubtasksId();
+        epic.setSubtasksId(updSubtaskId);
     }
 
     public void updateSubtask(Subtask subtask) {
-        int id = subtask.getId();
-        subtasks.put(id, subtask);
+        final Subtask updSubtask = subtasks.get(subtask.getId());
+        if (updSubtask == null) {
+            System.out.println("Такой подзадачи не существует");
+            return;
+        }
+        updSubtask.setName(subtask.getName());
+        updSubtask.setDescription(subtask.getDescription());
+        int epicId = subtask.getEpicId();
+        updSubtask.setEpicId(epicId);
     }
 
     public void removeTaskForId(int id) {
