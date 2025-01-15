@@ -117,7 +117,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (task == null) {
-            System.out.println("task is empty");
             return;
         }
         final Task updTask = tasks.get(task.getId());
@@ -129,7 +128,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic epic) {
         if (epic == null) {
-            System.out.println("epic is empty");
             return;
         }
         final Epic updEpic = epics.get(epic.getId());
@@ -143,7 +141,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask == null) {
-            System.out.println("subtask is empty");
             return;
         }
         subtask.setName(subtask.getName());
