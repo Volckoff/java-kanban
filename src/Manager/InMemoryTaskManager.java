@@ -88,8 +88,7 @@ public class InMemoryTaskManager implements TaskManager {
         return id;
     }
 
-    @Override
-    public void updateEpicStatus(Epic epic) {
+    private void updateEpicStatus(Epic epic) {
         int statusNew = 0;
         int statusDone = 0;
         if (!epic.getSubtasksId().isEmpty()) {
