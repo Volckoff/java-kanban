@@ -1,11 +1,11 @@
 package managers;
 
-import Manager.Managers;
-import Manager.TaskManager;
-import Task.Epic;
-import Task.Status;
-import Task.Subtask;
-import Task.Task;
+import manager.Managers;
+import manager.TaskManager;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

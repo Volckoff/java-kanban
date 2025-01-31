@@ -1,10 +1,10 @@
 package tasks;
 
-import Manager.Managers;
-import Manager.TaskManager;
-import Task.Epic;
-import Task.Status;
-import Task.Subtask;
+import manager.Managers;
+import manager.TaskManager;
+import task.Epic;
+import task.Status;
+import task.Subtask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ class SubtaskTest {
         Epic epic = new Epic("Test 1", "Description 1");
         int epicId = manager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Test 2", "Description 2", Status.NEW, epicId);
-        Integer subtaskId1 = manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask1);
         Subtask subtask2 = new Subtask("Test 3", "Description 3", Status.NEW, subtask1.getId());
         assertNull(manager.addNewSubtask(subtask2));
     }

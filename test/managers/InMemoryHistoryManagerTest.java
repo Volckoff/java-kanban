@@ -1,10 +1,10 @@
 package managers;
 
-import Manager.HistoryManager;
-import Manager.Managers;
-import Task.Epic;
-import Task.Status;
-import Task.Task;
+import manager.HistoryManager;
+import manager.Managers;
+import task.Epic;
+import task.Status;
+import task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
