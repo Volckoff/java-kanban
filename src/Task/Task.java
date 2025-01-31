@@ -1,4 +1,5 @@
 package Task;
+
 import java.util.Objects;
 
 public class Task {
@@ -26,7 +27,7 @@ public class Task {
     }
 
     public void setId(int id) {
-        this.id = id;
+            this.id = id;
     }
 
     public String getName() {
@@ -34,7 +35,9 @@ public class Task {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (!name.isEmpty()) {
+            this.name = name;
+        }
     }
 
     public String getDescription() {
@@ -42,7 +45,9 @@ public class Task {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (!description.isEmpty()) {
+            this.description = description;
+        }
     }
 
     public Status getStatus() {

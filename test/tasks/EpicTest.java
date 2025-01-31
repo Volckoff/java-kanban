@@ -1,10 +1,12 @@
 package tasks;
 
+import Manager.Managers;
+import Manager.TaskManager;
+import Task.Epic;
 import org.junit.jupiter.api.BeforeEach;
-import Task.*;
-import Manager.*;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
 
@@ -37,5 +39,23 @@ class EpicTest {
         Epic epic = new Epic(0, "Test 1", "Description 1");
         epic.addSubtaskId(0);
         assertEquals(0, epic.getSubtasksId().size(), "epic should not be add itself like subtask");
+    }
+
+    @Test
+    public void testUpdateEpic() {
+        Epic epic = new Epic(0, "Test 1", "Description 1");
+        assertEquals("Test 1", epic.getName(), "Epic has the wrong name ");
+        epic.setName("Test1 Upd");
+        manager.updateEpic(epic);
+        assertEquals("Test1 Upd", epic.getName(), "The name field has not been updated");
+    }
+
+    @Test
+    public void testRemoveEpicForId() {
+        Epic epic = new Epic(0, "Test 1", "Description 1");
+        int epicId = manager.addNewEpic(epic);
+        assertEquals(1, manager.getEpics().size(), "Epic should be added");
+        manager.removeEpicForId(epicId);
+        assertEquals(0, manager.getEpics().size(), "Epic should be added");
     }
 }

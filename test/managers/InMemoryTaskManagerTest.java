@@ -1,10 +1,16 @@
 package managers;
 
+import Manager.Managers;
+import Manager.TaskManager;
+import Task.Epic;
+import Task.Status;
+import Task.Subtask;
+import Task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import Task.*;
-import Manager.*;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class InMemoryTaskManagerTest {
 
@@ -75,12 +81,72 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testNotConflictTaskWithAndWithoutId() {
-        Task task1 = new Task ("Test 1", "Description", Status.NEW);
-        Task task2 = new Task (1,"Test 2", "Description 2", Status.IN_PROGRESS);
+        Task task1 = new Task("Test 1", "Description", Status.NEW);
+        Task task2 = new Task(1, "Test 2", "Description 2", Status.IN_PROGRESS);
         manager.addNewTask(task1);
         manager.addNewTask(task2);
         assertEquals(2, manager.getTasks().size(), "both tasks should be added");
         assertEquals(1, task1.getId(), "autogenerate id should be 1");
         assertEquals(2, task2.getId(), "task predefined id should be change");
+    }
+
+    @Test
+    public void testRemoveSubtaskFromEpic() {
+        Epic epic1 = new Epic(1, "Test 1", "Description 1");
+        final int epic1Id = manager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("Task.Subtask 1-1", "description1-1", Status.DONE, epic1Id);
+        final int subtask1Id = manager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Task.Subtask 2-1", "description2-1", Status.NEW, epic1Id);
+        final int subtask2Id = manager.addNewSubtask(subtask2);
+        manager.clearAllSubtasks();
+        assertEquals(0, epic1.getSubtasksId().size(), "Subtasks should be deleted from SubtasksId");
+    }
+
+    @Test
+    public void testChangeEpicStatus() {
+        Epic epic1 = new Epic(1, "Test 1", "Description 1");
+        final int epic1Id = manager.addNewEpic(epic1);
+        assertEquals(Status.NEW, epic1.getStatus(), "Status should be NEW");
+        Subtask subtask1 = new Subtask("Task.Subtask 1-1", "description1-1", Status.DONE, epic1Id);
+        final int subtask1Id = manager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Task.Subtask 2-1", "description2-1", Status.NEW, epic1Id);
+        final int subtask2Id = manager.addNewSubtask(subtask2);
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus(), "Status should be change to IN_PROGRESS ");
+    }
+
+    @Test
+    public void testRemoveAllTasks() {
+        Task task = new Task("Test 1", "Description 1", Status.NEW);
+        manager.addNewTask(task);
+        Task task2 = new Task("Test 2", "Description 2", Status.NEW);
+        manager.addNewTask(task2);
+        assertEquals(2, manager.getTasks().size(), "Tasks should be added");
+        manager.clearAllTasks();
+        assertEquals(0, manager.getTasks().size(), "Tasks should be deleted");
+    }
+
+    @Test
+    public void testRemoveAllEpics() {
+        Epic epic1 = new Epic(1, "Test 1", "Description 1");
+        manager.addNewEpic(epic1);
+        Epic epic2 = new Epic(2, "Test 2", "Description 2");
+        manager.addNewEpic(epic1);
+        assertEquals(2, manager.getEpics().size(), "Epics should be added");
+        manager.clearAllEpics();
+        assertEquals(0, manager.getEpics().size(), "Epics should be deleted");
+    }
+
+    @Test
+    public void testRemoveAllSubtasks() {
+        Epic epic1 = new Epic(1, "Test 1", "Description 1");
+        final int epic1Id = manager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("Task.Subtask 1-1", "description1-1", Status.DONE, epic1Id);
+        manager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Task.Subtask 1-2", "description1-1", Status.DONE, epic1Id);
+        manager.addNewSubtask(subtask2);
+        assertEquals(2, manager.getSubtasks().size(), "Subtasks should be added");
+        manager.clearAllSubtasks();
+        assertEquals(0, manager.getSubtasks().size(), "Subtasks should be deleted");
+
     }
 }
