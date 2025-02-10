@@ -1,11 +1,14 @@
-import Manager.*;
-import Task.*;
+import manager.Managers;
+import manager.TaskManager;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
-
 
 
         //Создание
@@ -24,7 +27,7 @@ public class Main {
         System.out.println("Добавляем подзадачи:");
         Subtask subtask1 = new Subtask("Task.Subtask 1-1", "description1-1", Status.DONE, epic1Id);
         final int subtask1Id = manager.addNewSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Task.Subtask 2-1", "description2-1", Status.DONE, epic1Id);
+        Subtask subtask2 = new Subtask("Task.Subtask 2-1", "description2-1", Status.NEW, epic1Id);
         final  int subtask2Id = manager.addNewSubtask(subtask2);
         Subtask subtask3 = new Subtask("Task.Subtask 3-2", "description3-2", Status.DONE, epic2Id);
         final int subtask3Id = manager.addNewSubtask(subtask3);
@@ -49,7 +52,8 @@ public class Main {
         System.out.println("Подзадачи");
         System.out.println(manager.getSubtasks());
 
-        // Проверка HistoryManager
+        // Проверка HistoryManager*
+//         System.out.println("Проверка истории задач");
 //        Task task1 = new Task("Task#1", "Вызов службы перевозки", Status.NEW);
 //        final int taskId1 = manager.addNewTask(task1);
 //        Task task2 = new Task("Task#2", "Вызов службы перевозки", Status.NEW);
@@ -75,14 +79,19 @@ public class Main {
 //        manager.getTask(taskId1);
 //        manager.getTask(taskId2);
 //        manager.getEpic(epicId3);
+//        manager.getEpic(epicId3);
 //        manager.getSubtask(subtaskId4);
 //        manager.getTask(taskId5);
 //        manager.getTask(taskId6);
+//        manager.getEpic(epicId3);
+//        manager.getEpic(epicId3);
 //        manager.getTask(taskId7);
 //        manager.getTask(taskId8);
 //        manager.getTask(taskId9);
 //        manager.getTask(taskId10);
 //        manager.getTask(taskId11);
+//        System.out.println(manager.getHistory());
+//        manager.removeEpicForId(epicId3);
 //        System.out.println(manager.getHistory());
     }
 }
