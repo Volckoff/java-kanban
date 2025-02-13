@@ -23,6 +23,11 @@ public class Epic extends Task {
         return subtasksId;
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
     public void addSubtaskId(int id) {
         if (subtasksId.contains(id)) {
             return;
@@ -30,7 +35,7 @@ public class Epic extends Task {
         if (this.id == id) {
             return;
         }
-            subtasksId.add(id);
+        subtasksId.add(id);
 
     }
 
