@@ -46,13 +46,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     protected void save() {
-        if (!Files.exists(file.toPath())) {
-            try {
-                Files.createFile(file.toPath());
-            } catch (Exception exp) {
-                System.out.println("Не удалось создать файл");
-            }
-        }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(headerString);
             writer.newLine();
@@ -71,6 +64,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
+        if (!Files.exists(file.toPath())) {
+            try {
+                Files.createFile(file.toPath());
+            } catch (Exception exp) {
+                System.out.println("Не удалось создать файл");
+            }
+        }
         FileBackedTaskManager managerRestored = new FileBackedTaskManager(file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
