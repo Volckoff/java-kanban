@@ -1,5 +1,6 @@
 package manager;
 
+import Exeptions.ManagerSaveException;
 import task.Epic;
 import task.Status;
 import task.Subtask;
@@ -19,7 +20,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        File file = new File("D:/JAVA/fileManager.csv");
+        File file = new File("./resources/fileManager.csv");
         FileBackedTaskManager managerRestored = FileBackedTaskManager.loadFromFile(file);
         System.out.println("Состояние менеджера после создания");
         System.out.println("Задачи:");

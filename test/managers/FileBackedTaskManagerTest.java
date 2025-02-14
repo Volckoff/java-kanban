@@ -37,7 +37,6 @@ class FileBackedTaskManagerTest {
         Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
         manager.addNewTask(task1);
         Epic epic = new Epic("Epic 1", "Description 1");
-        manager.addNewEpic(epic);
         int epicId1 = manager.addNewEpic(epic);
         Subtask subtask1 = new Subtask(1, "Subtask 1", "Description 1", Status.NEW, epicId1);
         manager.addNewSubtask(subtask1);
@@ -45,5 +44,11 @@ class FileBackedTaskManagerTest {
         assertEquals(1, restoredManager.getTasks().size(), "Didn't save or load task");
         assertEquals(1, restoredManager.getEpics().size(), "Didn't save or load epic");
         assertEquals(1, restoredManager.getSubtasks().size(), "Didn't save or load subtask");
+        assertEquals(manager.getTasks(), restoredManager.getTasks(), "the restored manager is different" +
+                " from the original");
+        assertEquals(manager.getEpics(), restoredManager.getEpics(), "the restored manager is different" +
+                " from the original");
+        assertEquals(manager.getSubtasks(), restoredManager.getSubtasks(), "the restored manager is" +
+                " different from the original");
     }
 }
