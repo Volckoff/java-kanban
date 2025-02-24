@@ -27,7 +27,7 @@ public class Task {
     }
 
     public void setId(int id) {
-            this.id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -56,6 +56,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     @Override
