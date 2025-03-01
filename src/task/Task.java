@@ -1,25 +1,69 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     protected int id;
     protected String name;
     protected String description;
     protected Status status;
+    private Duration duration = Duration.ofMinutes(0);
+    protected LocalDateTime startTime;
 
-    public Task(int id, String name, String description, Status status) {
-        this.id = id;
+    public Task(String name, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public Task(String name, String description, Status status) {
-        this.name = name;
-        this.description = description;
-        this.status = status;
+    public Task(int id, String name, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this(name, description, status, startTime, duration);
+        this.id = id;
+    }
+
+    public Task (int id, String name, String description, Status status) {
+        this(name, description, status, null, Duration.ofMinutes(0));
+        this.id = id;
+    }
+
+    public Task (String name, String description, Status status) {
+        this(name, description, status, null, Duration.ofMinutes(0));
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    public Duration getDuration() {
+        if (duration == null) {
+            return Duration.ofMinutes(0);
+        }
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        return this.startTime.compareTo(o.startTime);
     }
 
     public int getId() {

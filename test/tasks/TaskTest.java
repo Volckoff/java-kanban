@@ -10,27 +10,28 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
+    Task task1;
+    Task task2;
 
     TaskManager manager;
 
     @BeforeEach
     public void initManager() {
         manager = Managers.getDefault();
+        task1 = new Task(1, "Test 1", "Description 1", Status.NEW);
+        task2 = new Task(1, "Test 2", "Description 2", Status.IN_PROGRESS);
     }
 
     @Test
     public void testEqualsById() {
-        Task task1 = new Task(1, "Test 1", "Description 1", Status.NEW);
-        Task task2 = new Task(1, "Test 2", "Description 2", Status.IN_PROGRESS);
         assertEquals(task1, task2, "should be compared by Id");
     }
 
     @Test
     public void testUpdateTask() {
-        Task task = new Task(0, "Test 1", "Description 1", Status.NEW);
-        assertEquals("Test 1", task.getName(), "Epic has the wrong name ");
-        task.setName("Test1 Upd");
-        manager.updateTask(task);
-        assertEquals("Test1 Upd", task.getName(), "The name field has not been updated");
+        assertEquals("Test 1", task1.getName(), "Task has the wrong name ");
+        task1.setName("Test1 Upd");
+        manager.updateTask(task1);
+        assertEquals("Test1 Upd", task1.getName(), "The name field has not been updated");
     }
 }

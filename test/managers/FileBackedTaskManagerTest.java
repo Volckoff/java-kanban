@@ -1,54 +1,68 @@
 package managers;
 
+import exceptions.ManagerSaveException;
 import manager.FileBackedTaskManager;
+import manager.TaskManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import task.Epic;
 import task.Status;
-import task.Subtask;
 import task.Task;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
-    private FileBackedTaskManager manager;
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
 
     @Test
     @DisplayName("Инициализация и загрузка из пустого файла")
     void testSaveAndLoadFromEmptyFile() throws IOException {
         File tempFile = File.createTempFile("temp", "csv");
-        manager = new FileBackedTaskManager(tempFile);
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(tempFile);
-        assertNotNull(manager);
+        assertNotNull(taskManager);
         assertNotNull(restoredManager);
-        assertTrue(Files.exists(manager.getFile().toPath()));
+        assertTrue(Files.exists(restoredManager.getFile().toPath()));
     }
 
     @Test
     @DisplayName("Сохранение и загрузка нескольких задач")
     void saveAndLoadFromFileTest() throws IOException {
-        File tempFile = File.createTempFile("temp", "csv");
-        manager = new FileBackedTaskManager(tempFile);
-        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
-        manager.addNewTask(task1);
-        Epic epic = new Epic("Epic 1", "Description 1");
-        int epicId1 = manager.addNewEpic(epic);
-        Subtask subtask1 = new Subtask(1, "Subtask 1", "Description 1", Status.NEW, epicId1);
-        manager.addNewSubtask(subtask1);
-        FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(tempFile);
-        assertEquals(1, restoredManager.getTasks().size(), "Didn't save or load task");
-        assertEquals(1, restoredManager.getEpics().size(), "Didn't save or load epic");
-        assertEquals(1, restoredManager.getSubtasks().size(), "Didn't save or load subtask");
-        assertEquals(manager.getTasks(), restoredManager.getTasks(), "the restored manager is different" +
-                " from the original");
-        assertEquals(manager.getEpics(), restoredManager.getEpics(), "the restored manager is different" +
-                " from the original");
-        assertEquals(manager.getSubtasks(), restoredManager.getSubtasks(), "the restored manager is" +
-                " different from the original");
+        File file = File.createTempFile("tempFile", ".csv");
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
+        Task task = new Task("Task 1", "Description 1",
+                Status.NEW, LocalDateTime.of(2025, 1, 1, 1, 1),
+                Duration.ofMinutes(30));
+        taskManager.addNewTask(task);
+        Task oneMore = new Task("Task 1", "Description 1",
+                Status.NEW, LocalDateTime.of(2025, 2, 2, 2, 2),
+                Duration.ofMinutes(15));
+        taskManager.addNewTask(oneMore);
+        FileBackedTaskManager restoredFromFile = FileBackedTaskManager.loadFromFile(file);
+        assertNotNull(restoredFromFile, "taskManagerFromFile is null!");
+        assertEquals(restoredFromFile.getTasks().size(), taskManager.getTasks().size(),
+                "The number of tasks in managers is different");
+    }
+
+    @Test
+    public void testException() {
+        assertThrows(ManagerSaveException.class, () -> {
+            FileBackedTaskManager manager = new FileBackedTaskManager(new File("/invalid/path/task.csv"));
+            manager.save();
+        }, "should result in an error");
+    }
+
+    @Override
+    TaskManager initTaskManager() {
+        try {
+            File tempFile = File.createTempFile("temp", ".csv");
+            return FileBackedTaskManager.loadFromFile(tempFile);
+        } catch (IOException ignored) {
+        }
+        return null;
     }
 }

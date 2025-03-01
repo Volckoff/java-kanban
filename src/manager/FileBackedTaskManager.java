@@ -9,11 +9,13 @@ import task.Task;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
-    private static final String headerString = ("id,type,name,status,description,epicId");
+    private static final String headerString = ("id,type,name, status,description,startTime, Duration, epicId");
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -22,30 +24,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static void main(String[] args) {
         File file = new File("./resources/fileManager.csv");
         FileBackedTaskManager managerRestored = FileBackedTaskManager.loadFromFile(file);
-        System.out.println("Состояние менеджера после создания");
-        System.out.println("Задачи:");
         System.out.println(managerRestored.getTasks());
-        System.out.println("Эпики:");
-        System.out.println(managerRestored.getEpics());
-        System.out.println("Подзадачи:");
-        System.out.println(managerRestored.getSubtasks());
-        System.out.println("______________________________________________________________");
-        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
-        managerRestored.addNewTask(task1);
-        Epic epic = new Epic("Epic 1", "Description 1");
-        int epicId1 = managerRestored.addNewEpic(epic);
-        Subtask subtask1 = new Subtask(1, "Subtask 1", "Description 1", Status.NEW, epicId1);
+
+        Task task = new Task("Test 1", "Description 1", Status.IN_PROGRESS,
+                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(15));
+        managerRestored.addNewTask(task);
+        Task task2 = new Task("Test 2", "Description 2", Status.IN_PROGRESS,
+                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(15));
+        managerRestored.addNewTask(task2);
+        Epic epic = new Epic("Test 1", "Duration 1");
+        managerRestored.addNewEpic(epic);
+        int epicId = epic.getId();
+        Subtask subtask1 = new Subtask("Test 1-1", "Description 1", Status.NEW, LocalDateTime.now(),
+                Duration.ofMinutes(10), epicId);
+        Subtask subtask2 = new Subtask("Test 1-2", "Description 2", Status.DONE,
+                LocalDateTime.now().minusMinutes(15L), Duration.ofMinutes(10), epicId);
         managerRestored.addNewSubtask(subtask1);
-        System.out.println("Состояние менеджера после добавления задач");
-        System.out.println("Задачи:");
+        managerRestored.addNewSubtask(subtask2);
         System.out.println(managerRestored.getTasks());
-        System.out.println("Эпики:");
-        System.out.println(managerRestored.getEpics());
-        System.out.println("Подзадачи:");
-        System.out.println(managerRestored.getSubtasks());
     }
 
-    protected void save() {
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(headerString);
             writer.newLine();
@@ -87,9 +86,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (task.getType()) {
                     case TASK:
                         managerRestored.tasks.put(task.getId(), task);
+                        managerRestored.prioritizedTasks.add(task);
                         break;
                     case SUBTASK:
                         managerRestored.subtasks.put(task.getId(), (Subtask) task);
+                        managerRestored.prioritizedTasks.add(task);
                         break;
                     case EPIC:
                         managerRestored.epics.put(task.getId(), (Epic) task);

@@ -1,7 +1,6 @@
-id,type,name,status,description,epicId
-1,TASK,Task 1,NEW,Description 1
-4,TASK,Task 1,NEW,Description 1
-2,EPIC,Epic 1,NEW,Description 1
-5,EPIC,Epic 1,NEW,Description 1
-3,SUBTASK,Subtask 1,NEW,Description 1,2
-6,SUBTASK,Subtask 1,NEW,Description 1,5
+id,type,name, status,description,startTime, Duration, epicId
+1,TASK,Test 1,IN_PROGRESS,Description 1,2025-03-02T02:26:23.193808900,15
+2,TASK,Test 2,IN_PROGRESS,Description 2,2025-03-02T02:26:23.207353700,15
+3,EPIC,Test 1,IN_PROGRESS,Duration 1,2025-03-02T01:26:23.207353700,20
+4,SUBTASK,Test 1-1,NEW,Description 1,2025-03-02T01:41:23.207353700,10,3
+5,SUBTASK,Test 1-2,DONE,Description 2,2025-03-02T01:26:23.207353700,10,3
