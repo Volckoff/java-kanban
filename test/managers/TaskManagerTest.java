@@ -36,9 +36,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         int epicId = epic1.getId();
         epic2 = new Epic(2, "Test 2", "Description 2");
         subtask1 = new Subtask("Test 1-1", "Description 1", Status.NEW,
-                LocalDateTime.now().plusMinutes(20), Duration.ofMinutes(5), epicId);
+                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(5), epicId);
         subtask2 = new Subtask("Test 1-2", "Description 2", Status.DONE,
-                LocalDateTime.now().plusMinutes(40), Duration.ofMinutes(5), epicId);
+                LocalDateTime.now().plusMinutes(60), Duration.ofMinutes(5), epicId);
     }
 
 
@@ -187,7 +187,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         String name = "Test 1";
         String description = "Description 1";
         Status status = Status.NEW;
-        Task taskBefore = new Task(id, name, description, status);
+        LocalDateTime startTime = LocalDateTime.now();
+        Duration duration = Duration.ofMinutes(10);
+        Task taskBefore = new Task(id, name, description, status,startTime,duration);
         taskManager.addNewTask(taskBefore);
         Task taskAfter = taskManager.getTask(taskBefore.getId());
         assertEquals(id, taskAfter.getId());
@@ -198,8 +200,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void testNotConflictTaskWithAndWithoutId() {
-        Task taskWithId = new Task("Test 1", "Description", Status.NEW);
-        Task taskWithoutId = new Task(1, "Test 2", "Description 2", Status.IN_PROGRESS);
+        Task taskWithId = new Task("Test 1", "Description", Status.NEW,
+                LocalDateTime.now(),Duration.ofMinutes(5));
+        Task taskWithoutId = new Task(1, "Test 2", "Description 2", Status.IN_PROGRESS,
+                LocalDateTime.now().plusMinutes(20), Duration.ofMinutes(10));
         taskManager.addNewTask(taskWithId);
         taskManager.addNewTask(taskWithoutId);
         assertEquals(2, taskManager.getTasks().size(), "both tasks should be added");
@@ -223,18 +227,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(Status.IN_PROGRESS, epic1.getStatus(), "Status should be change to IN_PROGRESS");
         subtask1.setStatus(Status.DONE);
         subtask2.setStatus(Status.DONE);
-        taskManager.addNewSubtask(subtask1);
-        taskManager.addNewSubtask(subtask2);
+        taskManager.updateSubtask(subtask1);
+        taskManager.updateSubtask(subtask2);
         assertEquals(Status.DONE, epic1.getStatus(), "Status should be change to DONE");
         subtask1.setStatus(Status.NEW);
         subtask2.setStatus(Status.NEW);
-        taskManager.addNewSubtask(subtask1);
-        taskManager.addNewSubtask(subtask2);
+        taskManager.updateSubtask(subtask1);
+        taskManager.updateSubtask(subtask2);
         assertEquals(Status.NEW, epic1.getStatus(), "Status should be change to NEW");
         subtask1.setStatus(Status.IN_PROGRESS);
         subtask2.setStatus(Status.IN_PROGRESS);
-        taskManager.addNewSubtask(subtask1);
-        taskManager.addNewSubtask(subtask2);
+        taskManager.updateSubtask(subtask1);
+        taskManager.updateSubtask(subtask2);
         assertEquals(Status.IN_PROGRESS, epic1.getStatus(), "Status should be change to IN_PROGRESS");
     }
 
