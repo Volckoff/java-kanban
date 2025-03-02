@@ -134,14 +134,14 @@ public class InMemoryTaskManager implements TaskManager {
         if (task == null) {
             return;
         }
+        if (task.getStartTime() == null || !isTaskIntersection(task)) {
+            return;
+        }
         task.setName(task.getName());
         task.setDescription(task.getDescription());
         task.setStatus(task.getStatus());
         task.setStartTime(task.getStartTime());
         task.setDuration(task.getDuration());
-        if (task.getStartTime() == null || !isTaskIntersection(task)) {
-            return;
-        }
         tasks.put(task.getId(),task);
     }
 
@@ -162,6 +162,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask == null) {
             return;
         }
+        if (subtask.getStartTime() == null || !isTaskIntersection(subtask)) {
+            return;
+        }
         subtask.setName(subtask.getName());
         subtask.setDescription(subtask.getDescription());
         subtask.setStatus(subtask.getStatus());
@@ -169,9 +172,6 @@ public class InMemoryTaskManager implements TaskManager {
         subtask.setDuration(subtask.getDuration());
         updateEpicStatus(epics.get(subtask.getEpicId()));
         checkTermsForEpic(epics.get(subtask.getEpicId()));
-        if (subtask.getStartTime() == null || !isTaskIntersection(subtask)) {
-            return;
-        }
         subtasks.put(subtask.getId(), subtask);
     }
 
@@ -261,10 +261,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return getPrioritizedTasks().stream()
                 .filter(newTask -> task.getStartTime().isBefore(newTask.getEndTime()) &&
-                        task.getEndTime().isAfter(newTask.getStartTime()))
+                        task.getEndTime().isAfter(newTask.getStartTime()) &&
+                        task.getId() != newTask.getId())
                 .findAny()
                 .isEmpty();
     }
+
 
     private void checkTermsForEpic(Epic epic) {
         LocalDateTime startTime = LocalDateTime.MAX;
