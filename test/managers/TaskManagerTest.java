@@ -252,6 +252,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "that overlaps with time");
     }
 
+    @Test
+    public void getPrioritizedTest() {
+        Task task4 = new Task(1,"Task", "Des1", Status.NEW,
+                LocalDateTime.now(),Duration.ofMinutes(5));
+        Task task5 = new Task(2,"Task2", "Des2", Status.NEW,
+                LocalDateTime.now(),Duration.ofMinutes(5));
+        taskManager.addNewTask(task4);
+        taskManager.addNewTask(task5);
+        assertEquals(1, taskManager.getPrioritizedTasks().size(), "task2 shouldn't add in Set");
+    }
+
     TaskManager initTaskManager() {
         return Managers.getDefault();
     }
