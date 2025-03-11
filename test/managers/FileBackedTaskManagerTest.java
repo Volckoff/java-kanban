@@ -2,7 +2,7 @@ package managers;
 
 import exceptions.ManagerSaveException;
 import manager.FileBackedTaskManager;
-import manager.TaskManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +44,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                 LocalDateTime.now().plusMinutes(60), Duration.ofMinutes(5), epicId);
     }
 
+    @AfterEach
+    public void afterEach() {
+        if (file != null) {
+            file.delete();
+        }
+    }
 
     @Test
     @DisplayName("Инициализация и загрузка из пустого файла")
