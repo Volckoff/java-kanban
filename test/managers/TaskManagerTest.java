@@ -236,6 +236,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void getPrioritizedTest() {
+        taskManager.clearAllTasks();
+        taskManager.clearAllEpics();
+        taskManager.clearAllSubtasks();
         Task task4 = new Task(1,"Task", "Des1", Status.NEW,
                 LocalDateTime.now(),Duration.ofMinutes(5));
         Task task5 = new Task(2,"Task2", "Des2", Status.NEW,
