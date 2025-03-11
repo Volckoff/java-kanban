@@ -16,31 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
-    TaskManager taskManager;
+    T taskManager;
     protected Task task1;
     protected Task task2;
     protected Epic epic1;
     protected Epic epic2;
     protected Subtask subtask1;
     protected Subtask subtask2;
-
-    @BeforeEach
-    public void beforeEach() {
-        taskManager = initTaskManager();
-        task1 = new Task("Test 1", "Description 1", Status.IN_PROGRESS,
-                LocalDateTime.now(), Duration.ofMinutes(5));
-        task2 = new Task("Test 2", "Description 2", Status.IN_PROGRESS,
-                LocalDateTime.now().plusMinutes(10), Duration.ofMinutes(5));
-        epic1 = new Epic(1, "Test 1", "Description 1");
-        taskManager.addNewEpic(epic1);
-        int epicId = epic1.getId();
-        epic2 = new Epic(2, "Test 2", "Description 2");
-        subtask1 = new Subtask("Test 1-1", "Description 1", Status.NEW,
-                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(5), epicId);
-        subtask2 = new Subtask("Test 1-2", "Description 2", Status.DONE,
-                LocalDateTime.now().plusMinutes(60), Duration.ofMinutes(5), epicId);
-    }
-
 
     @Test
     void getEpicSubtask() {
@@ -261,10 +243,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewTask(task4);
         taskManager.addNewTask(task5);
         assertEquals(1, taskManager.getPrioritizedTasks().size(), "task2 shouldn't add in Set");
-    }
-
-    TaskManager initTaskManager() {
-        return Managers.getDefault();
     }
 
 }
