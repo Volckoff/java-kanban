@@ -2,15 +2,12 @@ package manager;
 
 import exceptions.ManagerSaveException;
 import task.Epic;
-import task.Status;
 import task.Subtask;
 import task.Task;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -19,29 +16,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
         this.file = file;
-    }
-
-    public static void main(String[] args) {
-        File file = new File("./resources/fileManager.csv");
-        FileBackedTaskManager managerRestored = FileBackedTaskManager.loadFromFile(file);
-        System.out.println(managerRestored.getTasks());
-
-        Task task = new Task("Test 1", "Description 1", Status.IN_PROGRESS,
-                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(15));
-        managerRestored.addNewTask(task);
-        Task task2 = new Task("Test 2", "Description 2", Status.IN_PROGRESS,
-                LocalDateTime.now().plusMinutes(45), Duration.ofMinutes(15));
-        managerRestored.addNewTask(task2);
-        Epic epic = new Epic("Test 1", "Duration 1");
-        managerRestored.addNewEpic(epic);
-        int epicId = epic.getId();
-        Subtask subtask1 = new Subtask("Test 1-1", "Description 1", Status.NEW, LocalDateTime.now(),
-                Duration.ofMinutes(10), epicId);
-        Subtask subtask2 = new Subtask("Test 1-2", "Description 2", Status.DONE,
-                LocalDateTime.now().minusMinutes(15L), Duration.ofMinutes(10), epicId);
-        managerRestored.addNewSubtask(subtask1);
-        managerRestored.addNewSubtask(subtask2);
-        System.out.println(managerRestored.getTasks());
     }
 
     public void save() {
