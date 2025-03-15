@@ -1,4 +1,4 @@
-package httpTaskServer;
+package http;
 
 import com.google.gson.reflect.TypeToken;
 import task.Task;

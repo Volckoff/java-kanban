@@ -1,7 +1,7 @@
 package httpTaksManager;
 
 import com.google.gson.Gson;
-import httpTaskServer.HttpTaskServer;
+import http.HttpTaskServer;
 import org.junit.jupiter.api.Test;
 import task.Status;
 import task.Task;

@@ -1,8 +1,8 @@
 package httpTaksManager;
 
 import com.google.gson.*;
-import httpTaskServer.HttpTaskServer;
-import httpTaskServer.TaskListTypeToken;
+import http.HttpTaskServer;
+import http.TaskListTypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
