@@ -19,7 +19,7 @@ public class BaseHttpHandler {
             .setPrettyPrinting()
             .create();
 
-    protected void sendNotFound(int rCode ,HttpExchange h, String text) throws IOException {
+    protected void sendNotFound(int rCode, HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(rCode, resp.length);
