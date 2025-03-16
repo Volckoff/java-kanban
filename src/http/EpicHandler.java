@@ -14,11 +14,9 @@ import java.util.List;
 
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
-    private final Gson gson;
 
-    EpicHandler(TaskManager taskManager, Gson gson) {
+    public EpicHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = gson;
     }
 
     @Override
@@ -35,25 +33,25 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 } else if (pathParts.length == 4 && pathParts[1].equals("epics") && pathParts[3].equals("subtasks")) {
                     getSubtasksHandle(exchange, gson, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "POST":
                 if (pathParts.length == 2 && pathParts[1].equals("epics")) {
                     postTaskHandle(exchange, gson);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "DELETE":
                 if (pathParts.length == 3 && pathParts[1].equals("epics")) {
                     deleteTaskHandle(exchange, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             default:
-                sendNotFound(exchange, "Method not found");
+                sendNotFound(405, exchange, "Method Not Allowed");
         }
     }
 
@@ -63,7 +61,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             String text = gson.toJson(tasks);
             sendText(exchange, text);
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request" + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + exp.getMessage());
         }
     }
 
@@ -75,7 +73,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             String text = gson.toJson(tasks);
             sendText(exchange, text);
         } catch (Exception e) {
-            sendNotFound(exchange, "An error occurred during the request" + e.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + e.getMessage());
         }
     }
 
@@ -85,7 +83,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             Epic task = taskManager.getEpic(id);
             sendText(exchange, gson.toJson(task));
         } catch (Exception e) {
-            sendNotFound(exchange, "Epic Id" + pathParts[2] + "not found");
+            sendNotFound(400, exchange, "Epic Id" + pathParts[2] + "not found");
         }
     }
 
@@ -95,7 +93,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             String body = new String(bodyInputStream.readAllBytes(), StandardCharsets.UTF_8);
             Epic taskDeserialized = gson.fromJson(body, Epic.class);
             if (taskDeserialized == null) {
-                sendNotFound(exchange, "Invalid format");
+                sendNotFound(400, exchange, "Invalid format");
                 return;
             }
             if (taskDeserialized.getId() == 0) {
@@ -103,14 +101,14 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 sendSuccessWithoutBody(exchange);
             } else {
                 if (taskManager.getEpic(taskDeserialized.getId()) == null) {
-                    sendNotFound(exchange, "Epic Id not found" + taskDeserialized.getId());
+                    sendNotFound(400, exchange, "Epic Id not found" + taskDeserialized.getId());
                 } else {
                     taskManager.updateEpic(taskDeserialized);
                     sendSuccessWithoutBody(exchange);
                 }
             }
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request" + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + exp.getMessage());
         }
     }
 
@@ -121,7 +119,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             taskManager.removeEpicForId(task.getId());
             sendText(exchange, "Epic was successfully deleted");
         } catch (Exception e) {
-            sendNotFound(exchange, "Epic Id" + pathParts[2] + "not founded");
+            sendNotFound(400, exchange, "Epic Id" + pathParts[2] + "not founded");
         }
     }
 }

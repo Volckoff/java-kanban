@@ -1,9 +1,10 @@
 package httpTaksManager;
 
+import adapters.DurationTypeAdapter;
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.*;
 import exceptions.NotFoundException;
 import http.HttpTaskServer;
-import http.TaskListTypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +39,11 @@ public class HttpEpicTest {
         }
     }
 
-    Gson gson = HttpTaskServer.getGson();
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .setPrettyPrinting()
+            .create();
 
 
     @BeforeEach

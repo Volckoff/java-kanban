@@ -1,5 +1,7 @@
 package http;
 
+import adapters.DurationTypeAdapter;
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
@@ -11,24 +13,24 @@ import java.time.LocalDateTime;
 
 public class BaseHttpHandler {
 
-    protected Gson gson = new GsonBuilder()
+    public Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
             .setPrettyPrinting()
             .create();
 
-    protected void sendText(HttpExchange h, String text) throws IOException {
+    protected void sendNotFound(int rCode ,HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(200, resp.length);
+        h.sendResponseHeaders(rCode, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }
 
-    protected void sendNotFound(HttpExchange h, String text) throws IOException {
+    protected void sendText(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(404, resp.length);
+        h.sendResponseHeaders(200, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }

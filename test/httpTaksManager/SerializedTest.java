@@ -1,7 +1,9 @@
 package httpTaksManager;
 
+import adapters.DurationTypeAdapter;
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
-import http.HttpTaskServer;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import task.Status;
 import task.Task;
@@ -13,7 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SerializedTest {
 
-    Gson gson = HttpTaskServer.getGson();
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .setPrettyPrinting()
+            .create();
 
     @Test
     public void serializationTest() {

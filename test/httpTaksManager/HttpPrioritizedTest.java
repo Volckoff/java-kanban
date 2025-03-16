@@ -1,11 +1,9 @@
 package httpTaksManager;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import adapters.DurationTypeAdapter;
+import adapters.LocalDateTimeAdapter;
+import com.google.gson.*;
 import http.HttpTaskServer;
-import http.TaskListTypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -39,7 +37,11 @@ public class HttpPrioritizedTest {
         }
     }
 
-    Gson gson = HttpTaskServer.getGson();
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .setPrettyPrinting()
+            .create();
 
     @BeforeEach
     public void setUp() {

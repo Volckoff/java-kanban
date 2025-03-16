@@ -13,11 +13,9 @@ import java.util.List;
 
 public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
-    private final Gson gson;
 
-    SubtaskHandler(TaskManager taskManager, Gson gson) {
+    SubtaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = gson;
     }
 
     @Override
@@ -32,25 +30,25 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else if (pathParts.length == 3 && pathParts[1].equals("subtasks")) {
                     getTaskHandle(exchange, gson, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "POST":
                 if (pathParts.length == 2 && pathParts[1].equals("subtasks")) {
                     postTaskHandle(exchange, gson);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "DELETE":
                 if (pathParts.length == 3 && pathParts[1].equals("subtasks")) {
                     deleteTaskHandle(exchange, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             default:
-                sendNotFound(exchange, "Method not found");
+                sendNotFound(405, exchange, "Method Not Allowed");
         }
     }
 
@@ -60,7 +58,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             String text = gson.toJson(tasks);
             sendText(exchange, text);
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request" + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + exp.getMessage());
         }
     }
 
@@ -70,7 +68,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             Subtask task = taskManager.getSubtask(id);
             sendText(exchange, gson.toJson(task));
         } catch (Exception e) {
-            sendNotFound(exchange, "Subtask Id" + pathParts[2] + "not found");
+            sendNotFound(400, exchange, "Subtask Id" + pathParts[2] + "not found");
         }
     }
 
@@ -80,26 +78,26 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             String body = new String(bodyInputStream.readAllBytes(), StandardCharsets.UTF_8);
             Subtask taskDeserialized = gson.fromJson(body, Subtask.class);
             if (taskDeserialized == null) {
-                sendNotFound(exchange, "Invalid format");
+                sendNotFound(400, exchange, "Invalid format");
                 return;
             }
             if (taskDeserialized.getId() == 0) {
                 int id = taskManager.addNewSubtask(taskDeserialized);
                 if (id == 0) {
-                    sendNotFound(exchange, "Can't create Subtask");
+                    sendNotFound(400, exchange, "Can't create Subtask");
                 } else {
                     sendSuccessWithoutBody(exchange);
                 }
             } else {
                 if (taskManager.getSubtask(taskDeserialized.getId()) == null) {
-                    sendNotFound(exchange, "Subtask Id not found" + taskDeserialized.getId());
+                    sendNotFound(400, exchange, "Subtask Id not found" + taskDeserialized.getId());
                 } else {
                     taskManager.updateSubtask(taskDeserialized);
                     sendSuccessWithoutBody(exchange);
                 }
             }
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request" + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + exp.getMessage());
         }
     }
 
@@ -110,7 +108,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             taskManager.removeSubtaskForId(task.getId());
             sendText(exchange, "Task was successfully deleted");
         } catch (Exception e) {
-            sendNotFound(exchange, "Subtask Id" + pathParts[2] + "not founded");
+            sendNotFound(400, exchange, "Subtask Id" + pathParts[2] + "not founded");
         }
     }
 }

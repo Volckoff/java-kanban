@@ -1,6 +1,5 @@
 package http;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
@@ -11,11 +10,9 @@ import java.util.List;
 
 public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
-    private final Gson gson;
 
-    PrioritizedHandler(TaskManager taskManager, Gson gson) {
+    public PrioritizedHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = gson;
     }
 
     @Override
@@ -29,10 +26,10 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
                 String text = gson.toJson(prioritizedTasks);
                 sendText(exchange, text);
             } catch (Exception exp) {
-                sendNotFound(exchange, "Request Error" + exp.getMessage());
+                sendNotFound(400, exchange, "Request Error" + exp.getMessage());
             }
         } else {
-            sendNotFound(exchange, "Method not found");
+            sendNotFound(405, exchange, "Method Not Allowed");
         }
     }
 }

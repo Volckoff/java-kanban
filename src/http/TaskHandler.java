@@ -13,11 +13,9 @@ import java.util.List;
 
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
-    private final Gson gson;
 
-    TaskHandler(TaskManager taskManager, Gson gson) {
+    TaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = gson;
     }
 
     @Override
@@ -33,25 +31,25 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 } else if (pathParts.length == 3 && pathParts[1].equals("tasks")) {
                     getTaskHandle(exchange, gson, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "POST":
                 if (pathParts.length == 2 && pathParts[1].equals("tasks")) {
                     postTaskHandle(exchange, gson);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             case "DELETE":
                 if (pathParts.length == 3 && pathParts[1].equals("tasks")) {
                     deleteTaskHandle(exchange, pathParts);
                 } else {
-                    sendNotFound(exchange, "Method not found");
+                    sendNotFound(400, exchange, "Bad request");
                 }
                 break;
             default:
-                sendNotFound(exchange, "Method not found");
+                sendNotFound(405, exchange, "Method Not Allowed");
         }
     }
 
@@ -61,7 +59,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             String text = gson.toJson(tasks);
             sendText(exchange, text);
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request" + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request" + exp.getMessage());
         }
     }
 
@@ -71,7 +69,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             Task task = taskManager.getTask(id);
             sendText(exchange, gson.toJson(task));
         } catch (Exception e) {
-            sendNotFound(exchange, "Task Id " + pathParts[2] + " not Found");
+            sendNotFound(400, exchange, "Task Id " + pathParts[2] + " not Found");
         }
     }
 
@@ -81,7 +79,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             String body = new String(bodyInputStream.readAllBytes(), StandardCharsets.UTF_8);
             Task taskDeserialized = gson.fromJson(body, Task.class);
             if (taskDeserialized == null) {
-                sendNotFound(exchange, "Invalid format");
+                sendNotFound(400, exchange, "Invalid format");
                 return;
             }
             if (taskDeserialized.getId() == 0) {
@@ -89,14 +87,14 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 sendSuccessWithoutBody(exchange);
             } else {
                 if (taskManager.getTask(taskDeserialized.getId()) == null) {
-                    sendNotFound(exchange, "Task Id not found " + taskDeserialized.getId());
+                    sendNotFound(400, exchange, "Task Id not found " + taskDeserialized.getId());
                 } else {
                     taskManager.updateTask(taskDeserialized);
                     sendSuccessWithoutBody(exchange);
                 }
             }
         } catch (Exception exp) {
-            sendNotFound(exchange, "An error occurred during the request " + exp.getMessage());
+            sendNotFound(400, exchange, "An error occurred during the request " + exp.getMessage());
         }
     }
 
@@ -107,7 +105,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
             taskManager.removeTaskForId(task.getId());
             sendText(exchange, "Task was successfully deleted");
         } catch (Exception e) {
-            sendNotFound(exchange, "Task Id " + pathParts[2] + "not founded");
+            sendNotFound(400, exchange, "Task Id " + pathParts[2] + "not founded");
         }
     }
 }
