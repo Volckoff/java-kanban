@@ -1,11 +1,15 @@
 package http;
 
 import com.sun.net.httpserver.HttpServer;
-import manager.Managers;
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import task.Status;
+import task.Task;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 public class HttpTaskServer {
@@ -32,8 +36,13 @@ public class HttpTaskServer {
     }
 
     public static void main(String[] args) throws IOException {
-        HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
+        InMemoryTaskManager manager = new InMemoryTaskManager();
+        Task task = new Task("Task 1", "Description 1",
+                Status.NEW, LocalDateTime.now(), Duration.ofMinutes(5));
+        manager.addNewTask(task);
+        HttpTaskServer server = new HttpTaskServer(manager);
         server.start();
+        System.out.println("The server is running on port " + PORT);
     }
 
 }

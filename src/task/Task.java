@@ -10,8 +10,8 @@ public class Task implements Comparable<Task> {
     protected String name;
     protected String description;
     protected Status status;
-    private Duration duration = Duration.ofMinutes(0);
     protected LocalDateTime startTime;
+    private Duration duration = Duration.ofMinutes(0);
 
     public Task(String name, String description, Status status,
                 LocalDateTime startTime, Duration duration) {
@@ -108,15 +108,6 @@ public class Task implements Comparable<Task> {
         return TaskType.TASK;
     }
 
-    @Override
-    public String toString() {
-        return "Task.Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -128,6 +119,18 @@ public class Task implements Comparable<Task> {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                '}';
     }
 }
 
